@@ -117,7 +117,7 @@ class SftArguments:
             self.lora_target_modules = MODEL_MAPPING[
                 self.model_type]['lora_TM']
         if self.use_flash_attn is None:
-            self.use_flash_attn = 'auto'
+            self.use_flash_attn = False
 
 
 def llm_sft(args: SftArguments) -> None:
