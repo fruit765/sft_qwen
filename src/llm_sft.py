@@ -130,7 +130,7 @@ def llm_sft(args: SftArguments) -> None:
 
     kwargs = {'low_cpu_mem_usage': True, 'device_map': 'auto'}
     if args.model_type == 'qwen-7b':
-        kwargs['use_flash_attn'] = args.use_flash_attn
+        kwargs['use_flash_attn'] = False
     model, tokenizer, model_dir = get_model_tokenizer(
         args.model_type, torch_dtype=torch.float16, **kwargs)
 
