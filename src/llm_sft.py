@@ -82,13 +82,13 @@ class SftArguments:
     best_max_checkpoint_num: int = 1
     logging_interval: int = 5
     tb_interval: int = 5
-
+    use_flash_attn: Optional[bool] = False
     # other
-    use_flash_attn: Optional[bool] = field(
-        default=None,
-        metadata={
-            'help': "This parameter is used only when model_type='qwen-7b'"
-        })
+    # use_flash_attn: Optional[bool] = field(
+    #     default=None,
+    #     metadata={
+    #         'help': "This parameter is used only when model_type='qwen-7b'"
+    #     })
 
     def __post_init__(self):
         if self.sft_type == 'lora':

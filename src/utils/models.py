@@ -212,7 +212,7 @@ MODEL_MAPPING = {
         'model_id': 'damo/nlp_polylm_qwen_7b_text_generation',
         'revision': 'v1.0.1',
         'get_function': get_model_tokenizer_qwen,
-        'torch_dtype': torch.bfloat16,
+        'torch_dtype': torch.float16,
         'lora_TM': LoRATM.polylm_qwen,
         'special_token_mapper': {
             'eos_token': '<|endoftext|>'
