@@ -82,7 +82,7 @@ class SftArguments:
     best_max_checkpoint_num: int = 1
     logging_interval: int = 5
     tb_interval: int = 5
-    use_flash_attn: Optional[bool] = False
+    use_flash_attn: bool = False
     # other
     # use_flash_attn: Optional[bool] = field(
     #     default=None,
@@ -116,8 +116,8 @@ class SftArguments:
         if self.lora_target_modules is None:
             self.lora_target_modules = MODEL_MAPPING[
                 self.model_type]['lora_TM']
-        if self.use_flash_attn is None:
-            self.use_flash_attn = False
+        # if self.use_flash_attn is None:
+        self.use_flash_attn = self.use_flash_attn
 
 
 def llm_sft(args: SftArguments) -> None:
