@@ -128,7 +128,7 @@ def llm_sft(args: SftArguments) -> None:
     if not support_bf16:
         logger.warning(f'support_bf16: {support_bf16}')
 
-    kwargs = {'low_cpu_mem_usage': True, 'device_map': 'auto', 'use_flash_attn': False}
+    kwargs = {'low_cpu_mem_usage': True, 'device_map': 'auto', 'use_flash_attn': args.use_flash_attn}
     if args.model_type == 'qwen-7b':
         kwargs['use_flash_attn'] = False
     model, tokenizer, model_dir = get_model_tokenizer(
