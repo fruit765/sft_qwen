@@ -214,6 +214,9 @@ MODEL_MAPPING = {
         'get_function': get_model_tokenizer_qwen,
         'torch_dtype': torch.bfloat16,
         'lora_TM': LoRATM.polylm_qwen,
+        'special_token_mapper': {
+            'eos_token': '<|endoftext|>'
+        }
 },
 }
 
