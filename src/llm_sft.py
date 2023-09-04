@@ -188,7 +188,7 @@ def llm_sft(args: SftArguments) -> None:
         'train': {
             'dataloader': {
                 'batch_size_per_gpu': args.batch_size,
-                'workers_per_gpu': 2,
+                'workers_per_gpu': 16,
                 'shuffle': True,
                 'drop_last': True,
                 'pin_memory': True
@@ -258,7 +258,7 @@ def llm_sft(args: SftArguments) -> None:
         'evaluation': {
             'dataloader': {
                 'batch_size_per_gpu': args.batch_size,
-                'workers_per_gpu': 0,
+                'workers_per_gpu': 16,
                 'shuffle': False,
                 'drop_last': False,
                 'pin_memory': True
