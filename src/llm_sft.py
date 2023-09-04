@@ -12,26 +12,25 @@ cd modelscope
 pip install -r requirements.txt
 pip install .
 """
-import os
-os.environ['CUDA_VISIBLE_DEVICES'] = '0,1'
-import warnings
-from dataclasses import dataclass, field
-from functools import partial
-from typing import List, Optional
-
-import torch
-from swift import LoRAConfig, Swift
-from torch import Tensor
+from modelscope.utils.config import Config
+from modelscope.trainers import EpochBasedTrainer
+from modelscope import get_logger
 from utils import (DATASET_MAPPING, DEFAULT_PROMPT, MODEL_MAPPING,
                    data_collate_fn, get_dataset, get_model_tokenizer,
                    get_T_max, get_work_dir, parse_args, plot_images,
                    print_example, print_model_info, process_dataset,
                    seed_everything, show_freeze_layers, stat_dataset,
                    tokenize_function)
+from torch import Tensor
+from swift import LoRAConfig, Swift
+import torch
+from typing import List, Optional
+from functools import partial
+from dataclasses import dataclass, field
+import warnings
+import os
+os.environ['CUDA_VISIBLE_DEVICES'] = '0,1'
 
-from modelscope import get_logger
-from modelscope.trainers import EpochBasedTrainer
-from modelscope.utils.config import Config
 
 warnings.warn(
     'This directory has been migrated to '
@@ -128,7 +127,8 @@ def llm_sft(args: SftArguments) -> None:
     if not support_bf16:
         logger.warning(f'support_bf16: {support_bf16}')
 
-    kwargs = {'low_cpu_mem_usage': True, 'device_map': 'auto', 'use_flash_attn': args.use_flash_attn}
+    kwargs = {'low_cpu_mem_usage': True, 'device_map': 'auto',
+              'use_flash_attn': args.use_flash_attn}
     if args.model_type == 'qwen-7b':
         kwargs['use_flash_attn'] = False
     model, tokenizer, model_dir = get_model_tokenizer(
@@ -140,14 +140,17 @@ def llm_sft(args: SftArguments) -> None:
 
     # ### Preparing lora
     if args.sft_type == 'lora':
-        lora_config = LoRAConfig(
+
+        lora_config_raw = {
             # pretrained_weights=args.ckpt_path,
-            target_modules=args.lora_target_modules,
-            r=args.lora_rank,
-            lora_alpha=args.lora_alpha,
-            lora_dropout=args.lora_dropout_p)
+            'target_modules': args.lora_target_modules,
+            'r': args.lora_rank,
+            'lora_alpha': args.lora_alpha,
+            'lora_dropout': args.lora_dropout_p
+        }
         if args.output_dir is not None:
-            lora_config.pretrained_weights = args.output_dir
+            lora_config_raw.pretrained_weights = args.output_dir
+        lora_config = LoRAConfig(lora_config_raw)
         logger.info(f'lora_config: {lora_config}')
         model = Swift.prepare_model(model, lora_config)
 
@@ -188,7 +191,7 @@ def llm_sft(args: SftArguments) -> None:
         'train': {
             'dataloader': {
                 'batch_size_per_gpu': args.batch_size,
-                'workers_per_gpu': 16,
+                'workers_per_gpu': 1,
                 'shuffle': True,
                 'drop_last': True,
                 'pin_memory': True
@@ -258,7 +261,7 @@ def llm_sft(args: SftArguments) -> None:
         'evaluation': {
             'dataloader': {
                 'batch_size_per_gpu': args.batch_size,
-                'workers_per_gpu': 16,
+                'workers_per_gpu': 1,
                 'shuffle': False,
                 'drop_last': False,
                 'pin_memory': True
