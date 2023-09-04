@@ -141,7 +141,7 @@ def llm_sft(args: SftArguments) -> None:
     # ### Preparing lora
     if args.sft_type == 'lora':
         lora_config = LoRAConfig(
-            pretrained_weights=args.ckpt_path,
+            # pretrained_weights=args.ckpt_path,
             target_modules=args.lora_target_modules,
             r=args.lora_rank,
             lora_alpha=args.lora_alpha,
