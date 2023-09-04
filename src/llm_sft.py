@@ -146,6 +146,8 @@ def llm_sft(args: SftArguments) -> None:
             r=args.lora_rank,
             lora_alpha=args.lora_alpha,
             lora_dropout=args.lora_dropout_p)
+        if args.output_dir is not None:
+            lora_config.pretrained_weights = args.output_dir
         logger.info(f'lora_config: {lora_config}')
         model = Swift.prepare_model(model, lora_config)
 
@@ -180,7 +182,8 @@ def llm_sft(args: SftArguments) -> None:
 
     T_max = get_T_max(
         len(train_dataset), args.batch_size, args.max_epochs, True)
-    work_dir = get_work_dir(args.output_dir)
+    # work_dir = get_work_dir(args.output_dir)
+    work_dir = args.output_dir
     config = Config({
         'train': {
             'dataloader': {
