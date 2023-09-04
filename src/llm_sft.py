@@ -13,7 +13,7 @@ pip install -r requirements.txt
 pip install .
 """
 import os
-# os.environ['CUDA_VISIBLE_DEVICES'] = '0,1'
+os.environ['CUDA_VISIBLE_DEVICES'] = '0,1'
 import warnings
 from dataclasses import dataclass, field
 from functools import partial
@@ -192,7 +192,7 @@ def llm_sft(args: SftArguments) -> None:
             'max_epochs':
             args.max_epochs,
             'work_dir':
-            work_dir,
+            args.output_dir,
             'optimizer': {
                 'type': 'AdamW',
                 'lr': args.learning_rate,
