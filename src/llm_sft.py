@@ -51,7 +51,7 @@ class SftArguments:
         default='lora', metadata={'choices': ['lora', 'full']})
     output_dir: Optional[str] = None
     ignore_args_error: bool = False  # True: notebook compatibility
-
+    ckpt_path: str = None
     dataset: str = field(
         default='alpaca-en,alpaca-zh',
         metadata={'help': f'dataset choices: {list(DATASET_MAPPING.keys())}'})
@@ -141,6 +141,7 @@ def llm_sft(args: SftArguments) -> None:
     # ### Preparing lora
     if args.sft_type == 'lora':
         lora_config = LoRAConfig(
+            pretrained_weights=args.ckpt_path,
             target_modules=args.lora_target_modules,
             r=args.lora_rank,
             lora_alpha=args.lora_alpha,
@@ -184,7 +185,7 @@ def llm_sft(args: SftArguments) -> None:
         'train': {
             'dataloader': {
                 'batch_size_per_gpu': args.batch_size,
-                'workers_per_gpu': 1,
+                'workers_per_gpu': 2,
                 'shuffle': True,
                 'drop_last': True,
                 'pin_memory': True
@@ -192,7 +193,7 @@ def llm_sft(args: SftArguments) -> None:
             'max_epochs':
             args.max_epochs,
             'work_dir':
-            args.output_dir,
+            work_dir,
             'optimizer': {
                 'type': 'AdamW',
                 'lr': args.learning_rate,
@@ -254,7 +255,7 @@ def llm_sft(args: SftArguments) -> None:
         'evaluation': {
             'dataloader': {
                 'batch_size_per_gpu': args.batch_size,
-                'workers_per_gpu': 1,
+                'workers_per_gpu': 2,
                 'shuffle': False,
                 'drop_last': False,
                 'pin_memory': True
