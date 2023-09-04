@@ -149,7 +149,7 @@ def llm_sft(args: SftArguments) -> None:
             'lora_dropout': args.lora_dropout_p
         }
         if args.output_dir is not None:
-            lora_config_raw["pretrained_weights"] = args.output_dir
+            lora_config_raw["pretrained_weights"] = os.path.join(args.output_dir, "output_best", "pytorch_model.bin")
         lora_config = LoRAConfig(lora_config_raw)
         logger.info(f'lora_config: {lora_config}')
         model = Swift.prepare_model(model, lora_config)
